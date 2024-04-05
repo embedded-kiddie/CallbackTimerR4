@@ -27,8 +27,8 @@
 
 // We can not get 32bit timer because they are already used.
 // The limit of duration for GPT and AGT 16bit timer:
-// - GPT: 1/(48MHz ÷ 1024) × 65536 = 1398.101[msec]
-// - AGT: 1/(24MHz ÷ 8   ) × 65536 =   21.845[msec]
+// - GPT: 1/(48MHz ÷ 1024) × 65535 = 1398.08[msec]
+// - AGT: 1/(24MHz ÷ 8   ) × 65535 ≒   21.85[msec]
 #define DIVISION_RATIO_GPT  1024
 #define DIVISION_RATIO_AGT  8
 #define LIMIT_DURATION_GPT  1398
@@ -99,10 +99,10 @@ public:
       uint32_t freq_hz;
       if (type == GPT_TIMER) {
         freq_hz = R_FSP_SystemClockHzGet(FSP_PRIV_CLOCK_PCLKD);
-        duration_max = (int)(65536000.0 * DIVISION_RATIO_GPT / freq_hz); 
+        duration_max = (int)(65535000.0 * DIVISION_RATIO_GPT / freq_hz); 
       } else {
         freq_hz = R_FSP_SystemClockHzGet(FSP_PRIV_CLOCK_PCLKB);
-        duration_max = (int)(65536000.0 * DIVISION_RATIO_AGT / freq_hz); 
+        duration_max = (int)(65535000.0 * DIVISION_RATIO_AGT / freq_hz); 
       }
 
       debug_print("freq_hz = "); debug_println(freq_hz);

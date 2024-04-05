@@ -13,7 +13,7 @@ int CBTimer_t::channel = 1;
 int CBTimer_t::duration_max = LIMIT_DURATION_GPT;
 int volatile CBTimer_t::duration_ms = 0;
 int volatile CBTimer_t::remain_ms = 0;
-timer_mode_t CBTimer_t::timer_mode = TIMER_MODE_PERIODIC;  // or TIMER_MODE_ONE_SHOT
+timer_mode_t CBTimer_t::timer_mode = TIMER_MODE_PERIODIC;  // or TIMER_MODE_ONE_SHOT defined in `variants/MINIMA/includes/ra/fsp/inc/api/r_timer_api.h`
 FspTimer CBTimer_t::fsp_timer;
 
 void (*CBTimer_t::user_callback)(void);

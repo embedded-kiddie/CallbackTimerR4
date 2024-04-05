@@ -32,15 +32,13 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  int i = 0;
-
-  while (i < 256) {
-    analogWrite(LED_BUILTIN, i++);
+  for (int i = 0; i < 256; i++) {
+    analogWrite(LED_BUILTIN, i);
     delay(2);
   }
 
-  while (i >= 0) {
-    analogWrite(LED_BUILTIN, i--);
+  for (int i = 255; i >= 0; i--) {
+    analogWrite(LED_BUILTIN, i);
     delay(2);
   }
 }

@@ -36,7 +36,6 @@
 
 class CBTimer_t {
 private:
-  static int channel;
   static int duration_max;
   static volatile int duration_ms;
   static volatile int remain_ms;
@@ -55,21 +54,11 @@ public:
   }
 
   bool start(void) {
-    debug_println("start()");
-    if ((duration_ms != 0) && (channel != -1)) {
-      return fsp_timer.start();
-    } else {
-      return false;
-    }
+    return fsp_timer.start();
   }
 
   bool stop(void) {
-    debug_println("stop()");
-    if ((duration_ms != 0) && (channel != -1)) {
-      return fsp_timer.stop();
-    } else {
-      return false;
-    }
+    return fsp_timer.stop();
   }
 
   static bool timer_config(timer_mode_t mode, int period_ms, bool start = true) {
@@ -88,30 +77,30 @@ public:
 
     else {
       // type is determined by get_available_timer(&type) as GPT_TIMER or AGT_TIMER
-      uint8_t type = AGT_TIMER;
-      channel = FspTimer::get_available_timer(type);
+      uint8_t type = GPT_TIMER;
+      int channel = FspTimer::get_available_timer(type);
 
       debug_print("type    = "); debug_println(type);
       debug_print("channel = "); debug_println(channel);
       debug_print("period  = "); debug_println(period_ms);
 
-      // calculate maximum limit of duration for each type of timer
-      uint32_t freq_hz;
-      if (type == GPT_TIMER) {
-        freq_hz = R_FSP_SystemClockHzGet(FSP_PRIV_CLOCK_PCLKD);
-        duration_max = (int)(65535000.0 * DIVISION_RATIO_GPT / freq_hz); 
-      } else {
-        freq_hz = R_FSP_SystemClockHzGet(FSP_PRIV_CLOCK_PCLKB);
-        duration_max = (int)(65535000.0 * DIVISION_RATIO_AGT / freq_hz); 
-      }
-
-      debug_print("freq_hz = "); debug_println(freq_hz);
-      debug_print("duration_max = "); debug_println(duration_max);
-
-      // set limit of duration
-      period_ms = min(period_ms, duration_max);
-
       if (channel != -1) {
+        // calculate maximum limit of duration for each type of timer
+        uint32_t freq_hz;
+        if (type == GPT_TIMER) {
+          freq_hz = R_FSP_SystemClockHzGet(FSP_PRIV_CLOCK_PCLKD);
+          duration_max = (int)(65535000.0 * DIVISION_RATIO_GPT / freq_hz); 
+        } else {
+          freq_hz = R_FSP_SystemClockHzGet(FSP_PRIV_CLOCK_PCLKB);
+          duration_max = (int)(65535000.0 * DIVISION_RATIO_AGT / freq_hz); 
+        }
+
+        debug_print("freq_hz = "); debug_println(freq_hz);
+        debug_print("duration_max = "); debug_println(duration_max);
+
+        // set limit of duration
+        period_ms = min(period_ms, duration_max);
+
         fsp_timer.begin(timer_mode, type, channel, 1000.0 / period_ms, 100.0, cbtimer_callback, nullptr);
         fsp_timer.setup_overflow_irq();
         fsp_timer.open();

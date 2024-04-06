@@ -9,7 +9,6 @@
 #include "Arduino.h"
 #include "CBTimer.h"
 
-int CBTimer_t::channel = -1;
 int CBTimer_t::duration_max = LIMIT_DURATION_GPT;
 int volatile CBTimer_t::duration_ms = 0;
 int volatile CBTimer_t::remain_ms = 0;
@@ -17,6 +16,7 @@ timer_mode_t CBTimer_t::timer_mode = TIMER_MODE_PERIODIC;  // or TIMER_MODE_ONE_
 FspTimer CBTimer_t::fsp_timer;
 
 void (*CBTimer_t::user_callback)(void);
+
 bool CBTimer_t::begin(timer_mode_t mode, int duration, void (*callback)(), bool start) {
   CBTimer_t::user_callback = callback;
   timer_mode = mode;
@@ -31,8 +31,7 @@ bool CBTimer_t::begin(int duration, void (*callback)(), bool start) {
 void CBTimer_t::cbtimer_callback(timer_callback_args_t __attribute__((unused)) * args) {
   debug_println("cbtimer_callback");
   if (remain_ms > duration_max) {
-    remain_ms -= duration_max;
-    timer_config(TIMER_MODE_ONE_SHOT, remain_ms);
+    timer_config(TIMER_MODE_ONE_SHOT, remain_ms -= duration_max);
   } else {
     timer_config(timer_mode, remain_ms = duration_ms);
     user_callback();

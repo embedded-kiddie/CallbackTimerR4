@@ -9,7 +9,7 @@
 #include "Arduino.h"
 #include "CBTimer.h"
 
-int CBTimer_t::channel = 1;
+int CBTimer_t::channel = -1;
 int CBTimer_t::duration_max = LIMIT_DURATION_GPT;
 int volatile CBTimer_t::duration_ms = 0;
 int volatile CBTimer_t::remain_ms = 0;

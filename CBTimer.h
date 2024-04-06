@@ -50,11 +50,11 @@ public:
   bool begin(int duration_ms, void (*callback)(void), bool start = true);
   bool begin(timer_mode_t timer_mode, int duration_ms, void (*callback)(void), bool start = true);
 
-  static void end(void) {
+  void end(void) {
     fsp_timer.end();
   }
 
-  static bool start(void) {
+  bool start(void) {
     debug_println("start()");
     if ((duration_ms != 0) && (channel != -1)) {
       return fsp_timer.start();
@@ -63,7 +63,7 @@ public:
     }
   }
 
-  static bool stop(void) {
+  bool stop(void) {
     debug_println("stop()");
     if ((duration_ms != 0) && (channel != -1)) {
       return fsp_timer.stop();

@@ -9,6 +9,10 @@
 #ifndef CBTIMER_H
 #define CBTIMER_H
 
+#if !defined(ARDUINO_UNOR4_MINIMA) && !defined(ARDUINO_UNOR4_WIFI)
+#error This library is only supported on the UNO-R4 (renesas_uno) boards.
+#endif
+
 #include "FspTimer.h"
 
 #ifndef debug_begin

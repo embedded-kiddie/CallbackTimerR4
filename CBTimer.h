@@ -43,6 +43,7 @@ private:
   static int duration_max;
   static volatile int duration_ms;
   static volatile int remain_ms;
+  static volatile uint32_t start_ms;
   static timer_mode_t timer_mode; // TIMER_MODE_PERIODIC or TIMER_MODE_ONE_SHOT defined in `variants/MINIMA/includes/ra/fsp/inc/api/r_timer_api.h`
   static FspTimer fsp_timer;
 
@@ -58,6 +59,7 @@ public:
   }
 
   bool start(void) {
+    start_ms = millis();
     return fsp_timer.start();
   }
 

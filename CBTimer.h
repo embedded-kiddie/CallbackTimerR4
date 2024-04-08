@@ -24,7 +24,8 @@
 #ifndef debug_println
 #define debug_println(...)
 #endif
-// To start playing music immediately, you must specify "CBTIMER_START_NOW" as "duration_ms" instead of "0".
+
+// To start playing music immediately, you must specify "CBTIMER_START_NOW" as "period_ms" instead of "0".
 #define CBTIMER_START_NOW (1)
 
 // We can not get 32bit timer because they are already used.
@@ -33,13 +34,13 @@
 // - AGT: 1/(24MHz ÷ 8   ) × 65535 ≒   21.85[msec]
 #define DIVISION_RATIO_GPT  1024
 #define DIVISION_RATIO_AGT  8
-#define LIMIT_DURATION_GPT  1398
-#define LIMIT_DURATION_AGT  21
+#define LIMIT_PERIOD_GPT    1398
+#define LIMIT_PERIOD_AGT    21
 
 class CBTimer_t {
 private:
-  static int duration_max;
-  static volatile int duration_ms;
+  static int period_max;
+  static volatile int period_ms;
   static volatile int remain_ms;
   static volatile uint32_t start_ms;
   static timer_mode_t timer_mode; // TIMER_MODE_PERIODIC or TIMER_MODE_ONE_SHOT (variants/MINIMA/includes/ra/fsp/inc/api/r_timer_api.h)
@@ -49,8 +50,8 @@ private:
   static void cbtimer_callback(timer_callback_args_t __attribute((unused)) * p_args);
 
 public:
-  bool begin(int duration_ms, void (*callback)(void), bool start = true);
-  bool begin(timer_mode_t timer_mode, int duration_ms, void (*callback)(void), bool start = true);
+  bool begin(int period_ms, void (*callback)(void), bool start = true);
+  bool begin(timer_mode_t timer_mode, int period_ms, void (*callback)(void), bool start = true);
 
   void end(void) {
     fsp_timer.end();
@@ -65,47 +66,57 @@ public:
     return fsp_timer.stop();
   }
 
-  static bool timer_config(timer_mode_t mode, int period_ms, bool start = true) {
+  static bool timer_config(timer_mode_t mode, int period, bool start = true) {
+    // set limit of duration
+    period = min(period, period_max);
+
     if (fsp_timer.is_opened()) {
-      period_ms = min(period_ms, duration_max);
-      fsp_timer.set_period_ms((double)period_ms);
+      fsp_timer.set_period_ms((double)period);
 
       // show FSP Timer infomation
-      debug_print("is_opened = "); debug_println(period_ms);
-      debug_print("get_period_raw = "); debug_println(fsp_timer.get_period_raw());
-      debug_print("get_counter = "); debug_println(fsp_timer.get_counter());
-      debug_print("get_freq_hz = "); debug_println(fsp_timer.get_freq_hz());
+      debug_println("is_opened = "      + String(period));
+      debug_println("get_period_raw = " + String(fsp_timer.get_period_raw()));
+      debug_println("get_counter    = " + String(fsp_timer.get_counter()));
+      debug_println("get_freq_hz    = " + String(fsp_timer.get_freq_hz()));
 
       return true;
     }
 
     else {
+
+#ifndef CBTIMER_FORCE_AGT
+
       // type is determined by get_available_timer(&type) as GPT_TIMER or AGT_TIMER
       uint8_t type = GPT_TIMER;
       int channel = FspTimer::get_available_timer(type);
 
-      debug_print("type    = "); debug_println(type);
-      debug_print("channel = "); debug_println(channel);
-      debug_print("period  = "); debug_println(period_ms);
+#else
+
+      // "FORCE_AGT" should not be defined. This is for testing purposes only.
+      uint8_t type = AGT_TIMER;
+      int channel = 1;  // chnnel 0 is already used for millis() and micros().
+
+#endif  // CBTIMER_FORCE_AGT
+
+      debug_println("type    = " + String(type));
+      debug_println("channel = " + String(channel));
+      debug_println("period  = " + String(period));
 
       if (channel != -1) {
         // calculate maximum limit of duration for each type of timer
         uint32_t freq_hz;
         if (type == GPT_TIMER) {
           freq_hz = R_FSP_SystemClockHzGet(FSP_PRIV_CLOCK_PCLKD);
-          duration_max = (int)(65535000.0 * DIVISION_RATIO_GPT / freq_hz); 
+          period_max = (int)(65535000.0 * DIVISION_RATIO_GPT / freq_hz); 
         } else {
           freq_hz = R_FSP_SystemClockHzGet(FSP_PRIV_CLOCK_PCLKB);
-          duration_max = (int)(65535000.0 * DIVISION_RATIO_AGT / freq_hz); 
+          period_max = (int)(65535000.0 * DIVISION_RATIO_AGT / freq_hz); 
         }
 
-        debug_print("freq_hz = "); debug_println(freq_hz);
-        debug_print("duration_max = "); debug_println(duration_max);
+        debug_println("freq_hz = "    + String(freq_hz));
+        debug_println("period_max = " + String(period_max));
 
-        // set limit of duration
-        period_ms = min(period_ms, duration_max);
-
-        fsp_timer.begin(timer_mode, type, channel, 1000.0 / period_ms, 100.0, cbtimer_callback, nullptr);
+        fsp_timer.begin(timer_mode, type, channel, 1000.0 / period, 100.0, cbtimer_callback, nullptr);
         fsp_timer.setup_overflow_irq();
         fsp_timer.open();
         if (start) {
@@ -113,9 +124,9 @@ public:
         }
 
         // show FSP Timer infomation
-        debug_print("get_period_raw = "); debug_println(fsp_timer.get_period_raw());
-        debug_print("get_counter = "); debug_println(fsp_timer.get_counter());
-        debug_print("get_freq_hz = "); debug_println(fsp_timer.get_freq_hz());
+        debug_println("get_period_raw = " + String(fsp_timer.get_period_raw()));
+        debug_println("get_counter    = " + String(fsp_timer.get_counter()));
+        debug_println("get_freq_hz    = " + String(fsp_timer.get_freq_hz()));
 
         return true;
       }

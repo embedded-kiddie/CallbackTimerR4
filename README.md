@@ -49,15 +49,15 @@ void loop() {
 
 ## API
 
-### bool begin(int duration_ms, void (*callback)(void), bool start = true)
+### bool begin(int period_ms, void (*callback)(void), bool start = true)
 
-- int duration_ms ... The time in milli seconds between starting the timer and calling your callback function. Or the interval between calling your callback function. You should specify `CBTIMER_START_NOW` instead of `0` when you start the timer immediately. It Returns false if timer allocation fails.
+- int period_ms ... The time in milli seconds between starting the timer and calling your callback function. Or the interval between calling your callback function. You should specify `CBTIMER_START_NOW` instead of `0` when you start the timer immediately. It Returns false if timer allocation fails.
 
 - void (*callback)(void) ... Your callback function.
 
 - bool start = true ... Start the timer when true or pend it when false.
 
-### bool begin(timer_mode_t timer_mode, int duration_ms, void (*callback)(void), bool start = true);
+### bool begin(timer_mode_t timer_mode, int period_ms, void (*callback)(void), bool start = true);
 
 - timer_mode_t timer_mode ... `TIMER_MODE_PERIODIC` (default) or `TIMER_MODE_ONE_SHOT`.
 
@@ -72,6 +72,6 @@ Pend the timer.
 ### void end(void)
 Calling this method followed by `stop()` will release the timer resource.
 
-### bool timer_config(timer_mode_t mode, int duration_ms, bool start = true)
+### bool timer_config(timer_mode_t mode, int period_ms, bool start = true)
 
-You can change the timer mode and duration in your callback function.
+You can change the timer mode and period in your callback function.

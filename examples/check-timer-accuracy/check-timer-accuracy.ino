@@ -9,14 +9,31 @@
 #include "Arduino.h"
 #include "CBTimer.h"
 
-static volatile uint32_t start, end, lap;
-static volatile uint32_t elapsed, interval;
+#if 1
+#define TIME_FUNCTION millis  // Check in milliseconds
+#define TIME_SCALE    1
+#else
+#define TIME_FUNCTION micros  // Check in microseconds
+#define TIME_SCALE    1000
+#endif
+
+#define TIME_PERIOD_MS    10 // 10, 50, 100, 500, 1000, 1500, 2000, 3000, ...[msec]
+#define TIME_MEASUREMENT  (60000 * TIME_SCALE)  // measurement for 1 minute
+
+static CBTimer_t CBTimer;
+static volatile uint32_t interrupts = 0;
+static volatile uint32_t start_time;
+static volatile uint32_t begin, end, lap;
+static volatile uint32_t elapsed, period;
 
 void user_callback(void) {
-  // Measure elapsed time and interval time
-  end = millis();
-  elapsed  = end - start;
-  interval = end - lap;
+  end = TIME_FUNCTION();
+
+  elapsed = end - begin;
+  period  = end - lap;
+  
+  lap = end;
+  interrupts++;
 
   // Blink LED
   digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
@@ -29,23 +46,25 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
 
-#define TIMER_DURATION  100  // 100, 500, 1000, 1500, 2000, 3000, 4000, ...[msec]
-
   // Initializing a periodic timer
-  CBTimer_t t;
-  t.begin(TIMER_MODE_PERIODIC, TIMER_DURATION, user_callback, false);
+  CBTimer.begin(TIMER_MODE_PERIODIC, TIME_PERIOD_MS, user_callback, false);
 
   // Start the timer
-  start = lap = millis();
-  t.start();
+  start_time = begin = lap = TIME_FUNCTION();
+  CBTimer.start();
 }
 
 void loop() {
-  // Stop in 1 hour + α (over 3600000 [msec])
-  if (end && elapsed < 3600200) {
-    lap = millis();
+  // Capture interrupt 
+  if (end) {
     end = 0;
+    Serial.println(String(elapsed) + " (" + String(period) + ")");
+  }
 
-    Serial.println(String(elapsed) + " (" + String(interval) + ")");
+  // Stop measurement
+  if (TIME_FUNCTION() - start_time > TIME_MEASUREMENT) {
+    CBTimer.stop();
+    Serial.println("Number of interrupts = " + String(interrupts));
+    while (1);
   }
 }

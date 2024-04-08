@@ -24,9 +24,7 @@
 #ifndef debug_println
 #define debug_println(...)
 #endif
-
-// To start playing music immediately you should not specify `0` as `duration_ms`.
-// You can specify the following symbols as `begin(CBTIMER_START_NOW, ...)`:
+// To start playing music immediately, you must specify "CBTIMER_START_NOW" as "duration_ms" instead of "0".
 #define CBTIMER_START_NOW (1)
 
 // We can not get 32bit timer because they are already used.
@@ -44,7 +42,7 @@ private:
   static volatile int duration_ms;
   static volatile int remain_ms;
   static volatile uint32_t start_ms;
-  static timer_mode_t timer_mode; // TIMER_MODE_PERIODIC or TIMER_MODE_ONE_SHOT defined in `variants/MINIMA/includes/ra/fsp/inc/api/r_timer_api.h`
+  static timer_mode_t timer_mode; // TIMER_MODE_PERIODIC or TIMER_MODE_ONE_SHOT (variants/MINIMA/includes/ra/fsp/inc/api/r_timer_api.h)
   static FspTimer fsp_timer;
 
   static void (*user_callback)(void);
@@ -70,7 +68,7 @@ public:
   static bool timer_config(timer_mode_t mode, int period_ms, bool start = true) {
     if (fsp_timer.is_opened()) {
       period_ms = min(period_ms, duration_max);
-      fsp_timer.set_period_ms(period_ms);
+      fsp_timer.set_period_ms((double)period_ms);
 
       // show FSP Timer infomation
       debug_print("is_opened = "); debug_println(period_ms);

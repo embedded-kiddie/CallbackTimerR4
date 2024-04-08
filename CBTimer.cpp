@@ -45,7 +45,7 @@ void CBTimer_t::cbtimer_callback(timer_callback_args_t __attribute__((unused)) *
     // execute user callback immediately
     user_callback();
   }
-  
+
   else {
     // actual elapsed time
     int t = (int)(millis() - start_ms);
@@ -58,7 +58,7 @@ void CBTimer_t::cbtimer_callback(timer_callback_args_t __attribute__((unused)) *
 
     else {
       if (timer_mode == TIMER_MODE_PERIODIC) {
-        // Rerun periodic timer
+        // rerun periodic timer before executing user callback
         timer_config(timer_mode, remain_ms = duration_ms);
       }
 

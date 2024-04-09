@@ -14,6 +14,10 @@
 #define debug_println(...)  Serial.println(__VA_ARGS__)
 #endif
 
+#if 0
+#define CBTIMER_FORCE_AGT
+#endif
+
 #include "CBTimer.h"
 
 // Initialize static data menbers
@@ -23,6 +27,12 @@ int volatile CBTimer::remain_ms = 0;
 uint32_t volatile CBTimer::start_ms = 0;
 void (*CBTimer::user_callback)(void) = nullptr;
 FspTimer CBTimer::fsp_timer;
+
+// Constructor / Destructor
+CBTimer::CBTimer() {}
+CBTimer::~CBTimer() {
+  end();
+}
 
 // TIMER_MODE_PERIODIC or TIMER_MODE_ONE_SHOT (variants/MINIMA/includes/ra/fsp/inc/api/r_timer_api.h)
 timer_mode_t CBTimer::timer_mode = TIMER_MODE_PERIODIC;

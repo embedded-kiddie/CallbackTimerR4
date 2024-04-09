@@ -50,6 +50,8 @@ private:
   static void cbtimer_callback(timer_callback_args_t __attribute((unused)) * p_args);
 
 public:
+  CBTimer();
+  ~CBTimer();
   bool begin(int period_ms, void (*callback)(void), bool start = true);
   bool begin(timer_mode_t timer_mode, int period_ms, void (*callback)(void), bool start = true);
 
@@ -98,7 +100,7 @@ public:
 
 #endif  // CBTIMER_FORCE_AGT
 
-      debug_println("type    = " + String(type));
+      debug_println("type    = " + String(type) + (type == GPT_TIMER ? " (GPT)" : " (AGT)"));
       debug_println("channel = " + String(channel));
       debug_println("period  = " + String(period));
 

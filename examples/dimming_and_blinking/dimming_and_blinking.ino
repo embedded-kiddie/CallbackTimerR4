@@ -26,8 +26,8 @@ void setup() {
   pinMode(LED_TX, OUTPUT);
   pinMode(LED_RX, OUTPUT);
 
-  CBTimer t;
-  t.begin(100, callback_func);
+  CBTimer timer;
+  timer.begin(100, callback_func);
 }
 
 void loop() {

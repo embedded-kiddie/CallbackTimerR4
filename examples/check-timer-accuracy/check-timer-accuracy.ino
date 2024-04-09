@@ -20,7 +20,7 @@
 #define TIME_PERIOD_MS    10 // 10, 50, 100, 500, 1000, 1500, 2000, 3000, ...[msec]
 #define TIME_MEASUREMENT  (60000 * TIME_SCALE)  // measurement for 1 minute
 
-static CBTimer_t CBTimer;
+static CBTimer timer;
 static volatile uint32_t interrupts = 0;
 static volatile uint32_t start_time;
 static volatile uint32_t begin, end, lap;
@@ -47,11 +47,11 @@ void setup() {
   digitalWrite(LED_BUILTIN, HIGH);
 
   // Initializing a periodic timer
-  CBTimer.begin(TIMER_MODE_PERIODIC, TIME_PERIOD_MS, user_callback, false);
+  timer.begin(TIMER_MODE_PERIODIC, TIME_PERIOD_MS, user_callback, false);
 
   // Start the timer
   start_time = begin = lap = TIME_FUNCTION();
-  CBTimer.start();
+  timer.start();
 }
 
 void loop() {
@@ -63,7 +63,7 @@ void loop() {
 
   // Stop measurement
   if (TIME_FUNCTION() - start_time > TIME_MEASUREMENT) {
-    CBTimer.stop();
+    timer.stop();
     Serial.println("Number of interrupts = " + String(interrupts));
     while (1);
   }

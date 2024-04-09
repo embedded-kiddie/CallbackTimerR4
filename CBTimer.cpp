@@ -16,29 +16,29 @@
 
 #include "CBTimer.h"
 
-int CBTimer_t::period_max = LIMIT_PERIOD_GPT;
-int volatile CBTimer_t::period_ms = 0;
-int volatile CBTimer_t::remain_ms = 0;
-uint32_t volatile CBTimer_t::start_ms = 0;
-FspTimer CBTimer_t::fsp_timer;
+// Initialize static data menbers
+int CBTimer::period_max = LIMIT_PERIOD_GPT;
+int volatile CBTimer::period_ms = 0;
+int volatile CBTimer::remain_ms = 0;
+uint32_t volatile CBTimer::start_ms = 0;
+void (*CBTimer::user_callback)(void) = nullptr;
+FspTimer CBTimer::fsp_timer;
 
 // TIMER_MODE_PERIODIC or TIMER_MODE_ONE_SHOT (variants/MINIMA/includes/ra/fsp/inc/api/r_timer_api.h)
-timer_mode_t CBTimer_t::timer_mode = TIMER_MODE_PERIODIC;
+timer_mode_t CBTimer::timer_mode = TIMER_MODE_PERIODIC;
 
-void (*CBTimer_t::user_callback)(void);
-
-bool CBTimer_t::begin(timer_mode_t mode, int period, void (*callback)(), bool start) {
+bool CBTimer::begin(timer_mode_t mode, int period, void (*callback)(), bool start) {
   timer_mode = mode;
   period_ms = remain_ms = period;
-  CBTimer_t::user_callback = callback;
+  CBTimer::user_callback = callback;
   return timer_config(timer_mode, period_ms, start);
 }
 
-bool CBTimer_t::begin(int period, void (*callback)(), bool start) {
+bool CBTimer::begin(int period, void (*callback)(), bool start) {
   return begin(TIMER_MODE_PERIODIC, period, callback, start);
 }
 
-void CBTimer_t::cbtimer_callback(timer_callback_args_t __attribute__((unused)) * args) {
+void CBTimer::cbtimer_callback(timer_callback_args_t __attribute__((unused)) * args) {
   debug_println("cbtimer_callback = " + String(args->event));
 
 #ifndef CBTIMER_NO_SPLIT

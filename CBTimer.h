@@ -37,7 +37,7 @@
 #define LIMIT_PERIOD_GPT    1398
 #define LIMIT_PERIOD_AGT    21
 
-class CBTimer_t {
+class CBTimer {
 private:
   static int period_max;
   static volatile int period_ms;

@@ -1,3 +1,7 @@
+# Datatypes (KEYWORD1)
+CBTimer			KEYWORD1
+
+# Methods and Functions (KEYWORD2)
 begin			KEYWORD2
 end				KEYWORD2
 start			KEYWORD2

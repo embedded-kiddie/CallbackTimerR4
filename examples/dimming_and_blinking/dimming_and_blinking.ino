@@ -24,10 +24,11 @@ void callback_func(void) {
 
 #elif defined(ARDUINO_UNOWIFIR4)
 
+  // P109 Port Output Data
   if (n++ % 2) {
-    R_PORT1->PODR_b.PODR9 = 1;
+    R_PORT1->PODR_b.PODR9 = HIGH;
   } else {
-    R_PORT1->PODR_b.PODR9 = 0;
+    R_PORT1->PODR_b.PODR9 = LOW;
   }
 
 #endif
@@ -42,8 +43,9 @@ void setup() {
 
 #elif defined(ARDUINO_UNOWIFIR4)
 
-  R_PFS->PORT[1].PIN[9].PmnPFS_b.PMR = 0;
-  R_PORT1->PDR_b.PDR9 = 1;
+  // setup P109 functions as GPIO output pin
+  R_PFS->PORT[1].PIN[9].PmnPFS_b.PMR = 0; // Port Mode Control
+  R_PORT1->PDR_b.PDR9 = 1;                // Port Direction
 
 #endif
 

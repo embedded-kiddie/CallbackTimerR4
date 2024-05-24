@@ -26,9 +26,9 @@ void callback_func(void) {
 
   // P109 Port Output Data
   if (n++ % 2) {
-    R_PORT1->PODR_b.PODR9 = HIGH;
+    R_BSP_PinWrite(BSP_IO_PORT_01_PIN_09, BSP_IO_LEVEL_HIGH);
   } else {
-    R_PORT1->PODR_b.PODR9 = LOW;
+    R_BSP_PinWrite(BSP_IO_PORT_01_PIN_09, BSP_IO_LEVEL_LOW);
   }
 
 #endif
@@ -43,25 +43,26 @@ void setup() {
 
 #elif defined(ARDUINO_UNOWIFIR4)
 
- // setup P109 functions as GPIO output pin for TX LED
-  R_PFS->PORT[1].PIN[9].PmnPFS_b.PMR = 0; // Port Mode Control
-  R_PORT1->PDR_b.PDR9 = 1;                // Port Direction
+  // setup P109 functions as GPIO output pin (PDR:1, PMR:0) for TX LED
+  R_BSP_PinWrite(BSP_IO_PORT_01_PIN_09, BSP_IO_LEVEL_LOW);
 
 #endif
 
   static CBTimer timer;
-  timer.begin(350, callback_func);
+  timer.begin(350 /* msec cycle */, callback_func);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
   for (int i = 0; i < 256; i++) {
     analogWrite(LED_BUILTIN, i);
-    delay(3);
+    delay(2);
   }
 
   for (int i = 255; i >= 0; i--) {
     analogWrite(LED_BUILTIN, i);
-    delay(3);
+    delay(2);
   }
+
+  delay(100);
 }

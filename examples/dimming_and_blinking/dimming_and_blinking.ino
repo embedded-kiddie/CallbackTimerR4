@@ -43,7 +43,7 @@ void setup() {
 
 #elif defined(ARDUINO_UNOWIFIR4)
 
-  // setup P109 functions as GPIO output pin
+ // setup P109 functions as GPIO output pin for TX LED
   R_PFS->PORT[1].PIN[9].PmnPFS_b.PMR = 0; // Port Mode Control
   R_PORT1->PDR_b.PDR9 = 1;                // Port Direction
 

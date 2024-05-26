@@ -7,7 +7,6 @@ This library allows you to generate as interrupt at specified cycle and call you
 The following codes modulate LED (`LED_BUILTIN`) in `loop()` and also blink LEDs (`LED_TX` and `LED_RX`) in `callback_func()`.
 
 ```C++
-#include "Arduino.h"
 #include "CBTimer.h"
 
 void callback_func(void) {
@@ -26,11 +25,7 @@ void callback_func(void) {
 #elif defined(ARDUINO_UNOWIFIR4)
 
   // P109 Port Output Data
-  if (n++ % 2) {
-    R_BSP_PinWrite(BSP_IO_PORT_01_PIN_09, BSP_IO_LEVEL_HIGH);
-  } else {
-    R_BSP_PinWrite(BSP_IO_PORT_01_PIN_09, BSP_IO_LEVEL_LOW);
-  }
+  R_BSP_PinWrite(BSP_IO_PORT_01_PIN_09, (n++ % 2 ? BSP_IO_LEVEL_HIGH : BSP_IO_LEVEL_LOW));
 
 #endif
 }
@@ -45,7 +40,7 @@ void setup() {
 #elif defined(ARDUINO_UNOWIFIR4)
 
   // setup P109 functions as GPIO output pin (PDR:1, PMR:0) for TX LED
-  R_BSP_PinWrite(BSP_IO_PORT_01_PIN_09, BSP_IO_LEVEL_LOW);
+  R_BSP_PinCfg (BSP_IO_PORT_01_PIN_09, BSP_IO_DIRECTION_OUTPUT);
 
 #endif
 

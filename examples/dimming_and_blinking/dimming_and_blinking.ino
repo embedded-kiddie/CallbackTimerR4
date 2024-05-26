@@ -6,7 +6,6 @@
   This software is released under the MIT License.
   http://opensource.org/licenses/mit-license.php
 */
-#include "Arduino.h"
 #include "CBTimer.h"
 
 void callback_func(void) {
@@ -25,11 +24,7 @@ void callback_func(void) {
 #elif defined(ARDUINO_UNOWIFIR4)
 
   // P109 Port Output Data
-  if (n++ % 2) {
-    R_BSP_PinWrite(BSP_IO_PORT_01_PIN_09, BSP_IO_LEVEL_HIGH);
-  } else {
-    R_BSP_PinWrite(BSP_IO_PORT_01_PIN_09, BSP_IO_LEVEL_LOW);
-  }
+  R_BSP_PinWrite(BSP_IO_PORT_01_PIN_09, (n++ % 2 ? BSP_IO_LEVEL_HIGH : BSP_IO_LEVEL_LOW));
 
 #endif
 }

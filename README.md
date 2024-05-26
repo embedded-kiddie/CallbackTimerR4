@@ -10,11 +10,11 @@ The following codes modulate LED (`LED_BUILTIN`) in `loop()` and also blink LEDs
 #include "CBTimer.h"
 
 void callback_func(void) {
-  static int n = 0;
+  static bool flag;
 
 #if defined(ARDUINO_MINIMA)
 
-  if (n++ % 2) {
+  if (flag = !flag) {
     digitalWrite(LED_TX, HIGH);
     digitalWrite(LED_RX,  LOW);
   } else {
@@ -25,7 +25,11 @@ void callback_func(void) {
 #elif defined(ARDUINO_UNOWIFIR4)
 
   // P109 Port Output Data
-  R_BSP_PinWrite(BSP_IO_PORT_01_PIN_09, (n++ % 2 ? BSP_IO_LEVEL_HIGH : BSP_IO_LEVEL_LOW));
+  if (flag = !flag) {
+    R_BSP_PinWrite(BSP_IO_PORT_01_PIN_09, BSP_IO_LEVEL_HIGH);
+  } else {
+    R_BSP_PinWrite(BSP_IO_PORT_01_PIN_09, BSP_IO_LEVEL_LOW);
+  }
 
 #endif
 }

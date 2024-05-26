@@ -44,7 +44,7 @@ void setup() {
 #elif defined(ARDUINO_UNOWIFIR4)
 
   // setup P109 functions as GPIO output pin (PDR:1, PMR:0) for TX LED
-  R_BSP_PinWrite(BSP_IO_PORT_01_PIN_09, BSP_IO_LEVEL_LOW);
+  R_BSP_PinCfg (BSP_IO_PORT_01_PIN_09, BSP_IO_DIRECTION_OUTPUT);
 
 #endif
 

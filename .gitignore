@@ -1,9 +1,3 @@
-# ignore all files and directories
-/*
-
-# allow list
-!.gitignore
-
 # VSCODE
 */.theia
 */.vscode

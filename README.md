@@ -96,3 +96,6 @@ Calling this method followed by `stop()` will release the timer resource.
 ### bool timer_config(timer_mode_t mode, int period_ms, bool start = true)
 
 You can change the timer mode and period in your callback function.
+
+## Blog post
+- [Explanation of timer library for Arduino UNO R4 created for BGM playback](https://embedded--kiddie-github-io.translate.goog/2024/04/09/arduino-r4-callback-timer.html?_x_tr_sl=ja&_x_tr_tl=en&_x_tr_hl=ja&_x_tr_pto=wapp "Explanation of timer library for Arduino UNO R4 created for BGM playback - Embedded Kiddie")

@@ -1,6 +1,6 @@
 # Arduino UNO R4 timer library using FspTimer class.
 
-This library allows you to generate as interrupt at specified cycle and call your function when timer event fires.
+This library allows you to generate interrupts at specified cycle and call functions when timer event fires.
 
 Unlike the original FSP timer, it can generate interrupts with very long periods, from a few seconds to even an hour.
 

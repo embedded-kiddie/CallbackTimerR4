@@ -2,6 +2,10 @@
 
 This library allows you to generate as interrupt at specified cycle and call your function when timer event fires.
 
+Unlike the original FSP timer, it can generate interrupts with very long periods, from a few seconds to even an hour.
+
+Therefore, it is sutable for playing music using tone() in combination with the [BackgroundMusicR4](https://github.com/embedded-kiddie/BackgroundMusicR4 "embedded-kiddie/BackgroundMusicR4: Arduino background music player with tone using CallbackTimerR4 library.") library. 
+
 ## Usage
 
 The following codes modulate LED (`LED_BUILTIN`) in `loop()` and also blink LEDs (`LED_TX` and `LED_RX`) in `callback_func()`.

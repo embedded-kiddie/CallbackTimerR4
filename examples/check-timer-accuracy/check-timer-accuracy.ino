@@ -43,6 +43,11 @@ void setup() {
   Serial.begin(115200);
   while (!Serial);
 
+#ifdef  ARDUINO_UNOR4_WIFI
+  // UNO R4 WiFi needs to wait for a while to complete Serial initialization.
+  delay(1000); // It requires at least 600 ms.
+#endif
+
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
 
